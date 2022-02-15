@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceive(context: Context?, intent: Intent?) {
             val message = intent?.extras?.getString("EXTRA_MESSAGE")
-            val phone = intent?.extras?.getString("EXTRA_PHONE")
+            val phone = intent?.extras?.getString("EXTRA_NUMBER")
             Log.i("IntentListener", "We received an intent: $message : $phone")
             Toast.makeText(context?.getApplicationContext(), "${phone}:${message}", Toast.LENGTH_SHORT).show()
         }
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         val intFilter = IntentFilter()
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as? AlarmManager
         // listening for intents
-        intFilter.addAction("edu.us.ischool.NAG")
+        intFilter.addAction("edu.us.ischool.msg")
         registerReceiver(receiver, intFilter)
 
         start = findViewById<Button>(R.id.start)
@@ -94,10 +94,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendMessages(alarm: AlarmManager, message: String, phone: String, min: Int) {
-        val intent = Intent("edu.us.ischool.NAG")
+        val intent = Intent("edu.us.ischool.msg")
         var time = System.currentTimeMillis() + (min * 60000)
         intent.putExtra("EXTRA_MESSAGE", message)
-        intent.putExtra("EXTRA_PHONE", phone)
+        intent.putExtra("EXTRA_NUMBER", phone)
 
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, time, (min * 60000).toLong(), pendingIntent)
